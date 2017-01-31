@@ -7,14 +7,14 @@
   <body>
     {% for theme in themes %}
     <div class="btn-group">
-      <a class="btn dropdown-toggle" data-toggle="dropdown" href="">
+      <a class="btn dropdown-toggle" data-toggle="dropdown">
       {{theme['title']}}
       <span class="caret"></span>
       </a>
       <ul class="dropdown-menu">
         {% for topic in topics %}
           {% if topic['topic'] == theme['slug'] %}
-            <li><a href="../{{topic['source']}}">{{topic['source']}}</a></li>
+            <li><a href="./{{topic['source']}}">{{topic['source']}}</a></li>
           {% endif %}
         {% endfor %}
       </ul>

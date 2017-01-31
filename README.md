@@ -9,6 +9,4 @@ Using templates and render them.
 
     python3 site_generator.py
 
-Open *index.html* in your browser. 
-
-##Enjoy)
+##Current version available on [GitHubPages](https://kostiq.github.io/19_site_generator/)

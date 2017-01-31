@@ -4,13 +4,13 @@ import markdown
 import os
 
 
+WAY_TO_MD_ARTICLE = 'articles/{}'
+WAY_TO_HTML_ARTICLE = 'site/{}.html'
+
+
 def load_config(path_to_json):
     with open(path_to_json, 'r') as jsonfile:
         return json.load(jsonfile)
-
-
-def convert_markdown_to_html(article):
-    return markdown.markdown(article, output_format='html5')
 
 
 def markdown_filter(text):
@@ -19,13 +19,13 @@ def markdown_filter(text):
 
 
 def open_markdown_article_from_file(md_article):
-    with open('articles/{0}'.format(md_article['source'])) as article_file:
+    with open(WAY_TO_MD_ARTICLE.format(md_article['source'])) as article_file:
         article_file = article_file.read()
         return article_file
 
 
 def get_html_article_path(md_article):
-    return 'site/{0}.html'.format(os.path.splitext(md_article['source'])[0])
+    return WAY_TO_HTML_ARTICLE.format(os.path.splitext(md_article['source'])[0])
 
 
 def write_html_article_to_file(html_article_file, html_article_path):
@@ -51,17 +51,16 @@ def render_article_page(html_article, title):
     return rendered_article_page
 
 
-def prepare_files(config):
+def get_config_with_html_articales(config):
     for md_article in config['articles']:
         html_article_path = get_html_article_path(md_article)
 
         create_html_article_dirs_if_not_exist(html_article_path)
 
-        html_article = convert_markdown_to_html(
-            open_markdown_article_from_file(md_article))
+        article = open_markdown_article_from_file(md_article)
 
         write_html_article_to_file(
-            render_article_page(html_article, md_article['title']), html_article_path)
+            render_article_page(article, md_article['title']), html_article_path)
 
         md_article['source'] = html_article_path
     return config
@@ -81,4 +80,4 @@ if __name__ == '__main__':
     article_template = env.get_template('/templates/article.html')
     main_template = env.get_template('/templates/template.html')
 
-    fill_content_main_page(prepare_files(config))
+    fill_content_main_page(get_config_with_html_articales(config))

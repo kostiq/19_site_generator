@@ -1,26 +1,26 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <style type="text/css">
-        a {
-            width: 30%;
-          }
-    </style>      
-    <title>Static site</title>
     <link href="static/css/bootstrap.min.css" rel="stylesheet">
+    <title>DEVMAN</title>
   </head>
   <body>
-    {% for theme in themes %}
-        {% for topic in topics %}
-        <div class="list-group" label='{{theme['title']}}'>
-          {% if topic['topic'] == theme['slug'] %}
-            <a href="./{{topic['source']}}" class="list-group-item">{{topic['source']}}</a>
-          {% endif %}
-        </div>
-        {% endfor %}
-      </ul>
+  {% for theme in themes %}
+  <div class="btn-group">
+    <a class="btn dropdown-toggle" data-toggle="dropdown" href="">
+      {{ theme['title'] }} 
+      <span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu">
+    {% for topic in topics %}
+      {% if topic['topic'] == theme['slug'] %}
+        <li><a class="dropdown-item" href="./{{ topic['source'] }}">{{topic['title']}}</a></li>
+      {% endif %}
     {% endfor %}
-    <script src="http://code.jquery.com/jquery-latest.js"></script>
-    <script src="static/js/bootstrap.min.js"></script>
+    </ul>
+  {% endfor %}
+  </div>
+  <script src="http://code.jquery.com/jquery-latest.js"></script>
+  <script src="static/js/bootstrap.min.js"></script>
   </body>
 </html>

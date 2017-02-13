@@ -14,7 +14,8 @@
     <ul class="dropdown-menu">
     {% for topic in topics %}
       {% if topic['topic'] == theme['slug'] %}
-        <li><a class="dropdown-item" href="./{{ topic['source'] }}">{{topic['title']}}</a></li>
+
+        <li><a class="dropdown-item" href="{{ topic['source'] }}">{{topic['title']}}</a></li>
       {% endif %}
     {% endfor %}
     </ul>

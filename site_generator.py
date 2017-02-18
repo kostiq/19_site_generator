@@ -2,7 +2,8 @@ from jinja2 import Template, Environment, FileSystemLoader, Markup
 import json
 import markdown
 import os
-
+import urllib
+from urllib.parse import quote
 
 WAY_TO_MD_ARTICLE = 'articles/{}'
 WAY_TO_HTML_ARTICLE = 'site/{}.html'
@@ -25,7 +26,7 @@ def open_markdown_article_from_file(md_article):
 
 
 def get_html_article_path(md_article):
-    return WAY_TO_HTML_ARTICLE.format(os.path.splitext(md_article['source'])[0])
+    return WAY_TO_HTML_ARTICLE.format(quote(os.path.splitext(md_article['source'])[0]))
 
 
 def write_html_article_to_file(html_article_file, html_article_path):

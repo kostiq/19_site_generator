@@ -5,9 +5,6 @@ import os
 import urllib
 from urllib.parse import quote
 
-WAY_TO_MD_ARTICLE = 'articles/{}'
-WAY_TO_HTML_ARTICLE = 'site/{}.html'
-
 
 def load_config(path_to_json):
     with open(path_to_json, 'r') as jsonfile:
@@ -19,29 +16,31 @@ def markdown_filter(text):
     return Markup(md.convert(text))
 
 
-def open_markdown_article_from_file(md_article):
-    with open(WAY_TO_MD_ARTICLE.format(md_article['source'])) as article_file:
-        article_file = article_file.read()
-        return article_file
+def get_md_article(path_to_file):
+    with open('articles/{}'.format(path_to_file)) as article_file:
+        return article_file.read()
 
 
-def get_html_article_path(md_article):
-    return WAY_TO_HTML_ARTICLE.format(quote(os.path.splitext(md_article['source'])[0]))
+def get_html_article_path(path_to_article):
+    return '{}.html'.format(path_to_article)
 
 
-def write_html_article_to_file(html_article_file, html_article_path):
-    with open(html_article_path, 'w') as article_html:
+def write_html_article(html_article_file, html_article_path):
+    with open('site/{}'.format(html_article_path), 'w') as article_html:
         article_html.write(html_article_file)
 
 
 def create_html_article_dirs_if_not_exist(html_article_path):
-    if not os.path.exists(os.path.dirname(html_article_path)):
-        os.makedirs(os.path.dirname(html_article_path))
+    if not os.path.exists(html_article_path):
+        os.makedirs(html_article_path)
 
 
 def create_jinja_environment():
-    env = Environment(loader=FileSystemLoader(
-        '.'), trim_blocks=True, lstrip_blocks=True, autoescape=True)
+    env = Environment(
+        loader=FileSystemLoader('.'),
+        trim_blocks=True,
+        lstrip_blocks=True,
+        autoescape=True)
     env.filters['markdown'] = markdown_filter
     return env
 
@@ -52,23 +51,32 @@ def render_article_page(html_article, title):
     return rendered_article_page
 
 
-def get_config_with_html_articales(config):
+def create_html_articles(config):
     for md_article in config['articles']:
-        html_article_path = get_html_article_path(md_article)
+        html_article_path = get_html_article_path(
+            os.path.splitext(md_article['source'])[0])
 
         create_html_article_dirs_if_not_exist(html_article_path)
 
-        article = open_markdown_article_from_file(md_article)
+        source_article = get_md_article(md_article['source'])
 
-        write_html_article_to_file(
-            render_article_page(article, md_article['title']), html_article_path)
+        write_html_article(
+            html_article_file=render_article_page(
+                source_article, md_article['title']),
+            html_article_path=html_article_path)
+    return 0
 
+
+def get_config_with_html_articles(config):
+    for md_article in config['articles']:
+        html_article_path = get_html_article_path(
+            os.path.splitext(md_article['source'])[0])
         md_article['source'] = html_article_path
     return config
 
 
-def fill_content_main_page(article_dict):
-    with open('index.html', 'w') as index:
+def fill_main_page(article_dict):
+    with open('site/index.html', 'w') as index:
         index.write(main_template.render(
             themes=article_dict['topics'], topics=article_dict['articles']))
 
@@ -79,6 +87,7 @@ if __name__ == '__main__':
 
     env = create_jinja_environment()
     article_template = env.get_template('/templates/article.html')
-    main_template = env.get_template('/templates/template.html')
+    main_template = env.get_template('/templates/main_page.html')
 
-    fill_content_main_page(get_config_with_html_articales(config))
+    create_html_articles(config)
+    fill_main_page(get_config_with_html_articles(config))

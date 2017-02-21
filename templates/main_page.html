@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+    <title>DEVMAN</title>
+  </head>
+  <body>
+    <div class="container">
+    <!-- Example row of columns -->
+    <div class="row">
+      {% for theme in themes%}
+        <div class="col-md-6">
+        <h2>{{ theme['title'] }}</h2>
+        {% for topic in topics %}
+          {% if theme['slug'] == topic['topic'] %}
+            <a href="{{topic['source']|urlencode}}">{{topic['title']}}</a><br>
+          {% endif %}
+        {% endfor %}
+        </div>
+      {% endfor %}
+    </div>
+  <script src="https://code.jquery.com/jquery-latest.js"></script>
+  <script src="../static/js/bootstrap.min.js"></script>
+  </body>
+</html>

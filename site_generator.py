@@ -26,7 +26,7 @@ def get_html_article_path(path_to_article):
 
 
 def write_html_article(html_article_file, html_article_path):
-    with open('site/{}'.format(html_article_path), 'w') as article_html:
+    with open(html_article_path, 'w') as article_html:
         article_html.write(html_article_file)
 
 
@@ -53,8 +53,8 @@ def render_article_page(html_article, title):
 
 def create_html_articles(config):
     for md_article in config['articles']:
-        html_article_path = get_html_article_path(
-            os.path.splitext(md_article['source'])[0])
+        html_article_path = 'site/{}'.format(
+            get_html_article_path(os.path.splitext(md_article['source'])[0]))
 
         create_html_article_dirs_if_not_exist(html_article_path)
 
